@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central Digital Library & Academic Directory</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        /* VERY SUBTLE GHOST WATERMARK (ஒத்து பாத்தா மட்டும் தெரியுற மாதிரி) */
+        .hero-secret-watermark {
+            position: absolute;
+            right: 35px;
+            bottom: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.08); /* Very Low Opacity */
+            letter-spacing: 2px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fa-solid fa-book-atlas logo-icon"></i>
+                <div>
+                    <h1>LIBTECH DIGITAL HUB</h1>
+                    <small>Smart Academic Knowledge & Location System <span class="secret-code-tag">AN-2026-SYS</span></small>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#entry-section" class="btn-entry-nav"><i class="fa-solid fa-id-card"></i> Student Gate Entry</a>
+                <a href="login.html" class="btn-admin"><i class="fa-solid fa-user-shield"></i> Librarian Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+        <div class="hero-overlay">
+            
+            <!-- SECRET GHOST WATERMARK (உன்னிப்பா பாத்தா மட்டும் தெரியும்) -->
+            <div class="hero-secret-watermark">AADHI ❤️ NANDHANA</div>
+
+            <div class="hero-content">
+                <h2>Comprehensive Campus Knowledge Repository & Shelf Matrix</h2>
+                <p>Over 100+ Reference Texts for B.Sc Computer Science, B.Sc IT, B.E CSE, Sciences, Literature & Novels.</p>
+                
+                <!-- Gate Clock-In Form -->
+                <div class="entry-card" id="entry-section">
+                    <h3><i class="fa-solid fa-door-open"></i> Student Digital Gate Entry Register</h3>
+                    <form id="gateEntryForm" onsubmit="submitGateEntry(event)">
+                        <div class="entry-grid">
+                            <input type="text" id="gateStudentName" placeholder="Student Full Name" required>
+                            <input type="text" id="gateRollNo" placeholder="Roll / Register No." required>
+                            <select id="gateDept" required>
+                                <option value="">Select Stream / Department</option>
+                                <option value="B.Sc Computer Science">💻 B.Sc Computer Science</option>
+                                <option value="B.Sc IT">💻 B.Sc Information Technology</option>
+                                <option value="B.E CSE">⚙️ B.E Computer Science (CSE)</option>
+                                <option value="B.Sc Physics">⚛️ B.Sc Physics</option>
+                                <option value="B.Sc Chemistry">🧪 B.Sc Chemistry</option>
+                                <option value="B.Sc Mathematics">📐 B.Sc Mathematics</option>
+                                <option value="B.Com / BBA">📊 B.Com / Commerce / BBA</option>
+                                <option value="B.A Literature">📚 B.A Literature & Novels</option>
+                            </select>
+                            <button type="submit" class="btn-gate"><i class="fa-solid fa-right-to-bracket"></i> Clock In Entry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        
+        <!-- Search & Department Pill Filters -->
+        <div class="filter-wrapper">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search Book Title, Author (e.g. Harry Potter, Balagurusamy), Rack No, or Dept..." onkeyup="filterBooks()">
+            </div>
+            
+            <div class="dept-pills" id="deptFilterContainer">
+                <button class="pill active" onclick="filterByDept('ALL')">All Streams (100+ Books)</button>
+                <button class="pill" onclick="filterByDept('B.Sc Computer Science')">💻 B.Sc Computer Science</button>
+                <button class="pill" onclick="filterByDept('B.Sc IT')">B.Sc IT</button>
+                <button class="pill" onclick="filterByDept('B.E CSE')">B.E CSE</button>
+                <button class="pill" onclick="filterByDept('B.Sc Physics')">B.Sc Physics</button>
+                <button class="pill" onclick="filterByDept('B.Sc Chemistry')">B.Sc Chemistry</button>
+                <button class="pill" onclick="filterByDept('B.Sc Mathematics')">B.Sc Maths</button>
+                <button class="pill" onclick="filterByDept('General Fiction & Novels')">Fiction & Novels</button>
+            </div>
+        </div>
+
+        <!-- Catalog Header -->
+        <div class="catalog-header">
+            <h3><i class="fa-solid fa-shelves"></i> Library Book Catalog & Shelf Directory</h3>
+            <span id="bookCountBadge" class="count-badge">Loading...</span>
+        </div>
+
+        <!-- Scrollable Container Box for 100 Books -->
+        <div class="books-scroll-box">
+            <div class="books-grid" id="booksContainer">
+                <div class="loading-state">
+                    <i class="fa-solid fa-bolt fa-spin"></i> Syncing 100+ Books Matrix...
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Detail & Shelf Location Modal Popup -->
+        <div class="modal-overlay" id="reserveModal">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div class="modal-body-grid">
+                    <img id="modalBookImg" src="" alt="Book Cover" class="modal-cover">
+                    <div class="modal-details">
+                        <span id="modalBookDept" class="badge-dept"></span>
+                        <h2 id="modalBookTitle"></h2>
+                        <p id="modalBookAuthor" class="author-text"></p>
+                        
+                        <!-- RACK LOCATION BOX -->
+                        <div class="location-box">
+                            <h4><i class="fa-solid fa-map-pin"></i> Shelf Location Finder</h4>
+                            <div class="loc-grid">
+                                <div><span>Rack No:</span> <strong id="modalRackNo"></strong></div>
+                                <div><span>Row / Shelf:</span> <strong id="modalRowNo"></strong></div>
+                                <div><span>Floor / Wing:</span> <strong id="modalWingNo"></strong></div>
+                            </div>
+                        </div>
+
+                        <p id="modalBookDesc" class="desc-text"></p>
+                        <div class="stock-info" id="modalStockStatus"></div>
+
+                        <form id="reserveForm" onsubmit="submitReservation(event)">
+                            <input type="hidden" id="modalBookId">
+                            <div class="form-group">
+                                <label>Student Borrower Name</label>
+                                <input type="text" id="studentName" required placeholder="Enter Full Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Roll Number / Register ID</label>
+                                <input type="text" id="studentId" required placeholder="Enter Register No.">
+                            </div>
+                            <button type="submit" class="btn-modal-reserve" id="btnModalSubmit">Request Book Check-Out</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RICH FOOTER DESCRIPTION & ACADEMIC INDEX -->
+    <footer class="rich-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>📚 Campus Knowledge Directory</h4>
+                    <p>LibTech Central Digital Library serves as the primary academic resource center. It houses over 100,000+ print volumes, international research journals, and computerized digital archives for B.Sc, B.E/B.Tech, Commerce, and Literature disciplines.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>🏛️ Operating Hours & Rules</h4>
+                    <ul>
+                        <li><strong>Monday - Friday:</strong> 8:00 AM - 8:00 PM</li>
+                        <li><strong>Saturday:</strong> 9:00 AM - 5:00 PM</li>
+                        <li><strong>Check-Out Limit:</strong> Max 3 Books per Student</li>
+                        <li><strong>Return Period:</strong> 14 Days Standard Loan</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>📍 Wing Allocation</h4>
+                    <ul>
+                        <li><strong>Wing A:</strong> B.Sc Computer Science & IT Racks</li>
+                        <li><strong>Wing B:</strong> Engineering (B.E CSE / ECE / Mech)</li>
+                        <li><strong>Wing C:</strong> Physical Sciences & Mathematics</li>
+                        <li><strong>Wing D:</strong> General Fiction & Novels</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 LibTech Academic Portal. Curated by <span class="secret-credit">Aadhi & Nandhana</span> & System Network Team.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
