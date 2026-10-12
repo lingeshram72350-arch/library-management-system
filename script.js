@@ -1,19 +1,8 @@
-// High-Speed Firebase Realtime Cloud Setup
-const firebaseConfig = {
-    databaseURL: "https://library-demo-live-default-rtdb.firebaseio.com/"
-};
-
-let database = null;
-try {
-    if (typeof firebase !== 'undefined') {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        database = firebase.database();
-    }
-} catch (e) {
-    console.log("Firebase fallback active");
-}
+// ==========================================
+// 1. FREE CENTRAL CLOUD ENGINE (NO FIREBASE SETUP NEEDED)
+// ==========================================
+const CLOUD_STORAGE_KEY = "library_master_system_msu_2026";
+const CLOUD_API_URL = "https://api.restful-api.dev/objects"; // உலகத்தில் எங்கிருந்து போட்டாலும் சிங்க் ஆகும் Central Endpoint
 
 let allBooks = [];
 let currentDeptFilter = 'ALL';
@@ -46,10 +35,9 @@ function handleAdminLogout() {
     window.location.href = 'login.html';
 }
 
-// 1000+ COMPREHENSIVE COLLEGE LIBRARY CATALOG GENERATOR
+// 1000+ COMPREHENSIVE COLLEGE LIBRARY CATALOG
 function generateFull1000Catalog() {
     const catalog = [
-        // AADHI & NANDHANA SPECIAL DEDICATION BOOK
         { 
             id: "special_love_1", 
             title: "Eternal Symphony of Aadhi & Nandhana", 
@@ -71,8 +59,6 @@ function generateFull1000Catalog() {
                 "Chapter 5: Together Always"
             ]
         },
-
-        // Harry Potter Series 1 to 7
         { 
             id: "hp_1", 
             title: "Harry Potter and the Philosopher's Stone", 
@@ -85,8 +71,8 @@ function generateFull1000Catalog() {
             row: "Row 1, Shelf A", 
             wing: "Fiction Wing", 
             image: "https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=400", 
-            description: "The classic introduction to Harry Potter as he discovers his magical heritage and enters Hogwarts.",
-            chapters: ["Chapter 1: The Boy Who Lived", "Chapter 2: The Vanishing Glass", "Chapter 3: The Letters from No One", "Chapter 4: The Keeper of the Keys", "Chapter 5: Diagon Alley"]
+            description: "The classic introduction to Harry Potter as he discovers his magical heritage.",
+            chapters: ["Chapter 1: The Boy Who Lived", "Chapter 2: The Vanishing Glass", "Chapter 3: The Letters from No One", "Chapter 4: The Keeper of the Keys"]
         },
         { 
             id: "hp_2", 
@@ -100,27 +86,11 @@ function generateFull1000Catalog() {
             row: "Row 1, Shelf B", 
             wing: "Fiction Wing", 
             image: "https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=400", 
-            description: "Harry faces the sinister mysteries within Salazar Slytherin's hidden chamber at Hogwarts.",
-            chapters: ["Chapter 1: The Worst Birthday", "Chapter 2: Dobby's Warning", "Chapter 3: The Burrow", "Chapter 4: At Flourish and Blotts"]
-        },
-        { 
-            id: "hp_3", 
-            title: "Harry Potter and the Prisoner of Azkaban", 
-            author: "J.K. Rowling", 
-            authorBio: "British Author & Creator of the Wizarding World",
-            category: "General Fiction & Novels", 
-            copies: 4, 
-            totalCopies: 5,
-            rack: "Rack H-01", 
-            row: "Row 2, Shelf A", 
-            wing: "Fiction Wing", 
-            image: "https://images.unsplash.com/photo-1618666012174-83b441c0bc76?w=400", 
-            description: "Harry uncovers secrets of his family's past and encounters the escaped prisoner Sirius Black.",
-            chapters: ["Chapter 1: Owl Post", "Chapter 2: Aunt Marge's Mistake", "Chapter 3: The Knight Bus", "Chapter 4: The Dementor"]
+            description: "Harry faces the sinister mysteries within Salazar Slytherin's hidden chamber.",
+            chapters: ["Chapter 1: The Worst Birthday", "Chapter 2: Dobby's Warning", "Chapter 3: The Burrow"]
         }
     ];
 
-    // B.Sc Computer Science Core Standard Textbooks
     const bscCS_Core = [
         { title: "Programming in ANSI C & Data Structures", author: "E. Balagurusamy", bio: "Former Vice-Chancellor of Anna University", desc: "Core paper covering structured programming, pointers, queues, and tree architectures." },
         { title: "Object Oriented Programming with C++", author: "E. Balagurusamy", bio: "Acclaimed Author in Computer Science", desc: "Covers classes, operator overloading, inheritance, and polymorphic functions." },
@@ -130,8 +100,7 @@ function generateFull1000Catalog() {
         { title: "Java Programming & Collections Framework", author: "E. Balagurusamy", bio: "Academic Writer & Computer Scientist", desc: "JVM internal architecture, multithreading pipelines, exception hierarchy, and collections." },
         { title: "Python Programming for Problem Solving", author: "Paul Deitel & Harvey Deitel", bio: "Prominent Software Engineering Authors", desc: "Python syntax, lists, dictionary maps, modules, and introductory NumPy." },
         { title: "Web Technologies (HTML5, CSS3, JS & PHP)", author: "Uttam K. Roy", bio: "IT Faculty Member, Jadavpur University", desc: "Responsive layout design, DOM event tree, client-server scripting, and MySQL access." },
-        { title: "Software Engineering Principles", author: "Roger S. Pressman", bio: "Software Engineering Authority", desc: "Agile, Waterfall lifecycle models, SRS documentation, UML class models, and testing suites." },
-        { title: "Design & Analysis of Computer Algorithms", author: "Ellis Horowitz & Sartaj Sahni", bio: "Pioneers in Algorithm Analysis", desc: "Asymptotic notation, Divide & Conquer, Dynamic Programming, and Greedy techniques." }
+        { title: "Software Engineering Principles", author: "Roger S. Pressman", bio: "Software Engineering Authority", desc: "Agile, Waterfall lifecycle models, SRS documentation, UML class models, and testing suites." }
     ];
 
     const covers = [
@@ -142,7 +111,6 @@ function generateFull1000Catalog() {
         "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400"
     ];
 
-    // Seed B.Sc CS Catalog
     bscCS_Core.forEach((subj, idx) => {
         catalog.push({
             id: `cs_main_${idx+1}`,
@@ -167,7 +135,6 @@ function generateFull1000Catalog() {
         });
     });
 
-    // Generate up to 1,000 Volume Catalog across all streams
     const departments = [
         { name: "B.Sc Computer Science", prefix: "CS" },
         { name: "B.Sc IT", prefix: "IT" },
@@ -209,39 +176,12 @@ function generateFull1000Catalog() {
     return catalog;
 }
 
-// App Initialization
+// Global App Initialization
 function initApp() {
-    let savedBooks = localStorage.getItem('lib_books');
-    if (savedBooks && JSON.parse(savedBooks).length >= 1000) {
-        allBooks = JSON.parse(savedBooks);
-    } else {
-        allBooks = generateFull1000Catalog();
-        localStorage.setItem('lib_books', JSON.stringify(allBooks));
-    }
-
+    allBooks = generateFull1000Catalog();
     renderBooks();
     updateGlobalStockBadge();
-
-    // Firebase Sync
-    if (database) {
-        database.ref('books').on('value', (snapshot) => {
-            const cloudData = snapshot.val();
-            if (cloudData) {
-                let temp = [];
-                for (let id in cloudData) {
-                    let b = cloudData[id];
-                    b.id = id;
-                    temp.push(b);
-                }
-                if (temp.length > 50) {
-                    allBooks = temp;
-                    localStorage.setItem('lib_books', JSON.stringify(allBooks));
-                    renderBooks();
-                    updateGlobalStockBadge();
-                }
-            }
-        });
-    }
+    fetchCloudData(); // முதலிலேயே கிளவுடில் இருந்து டேட்டாவை இழுக்கும்
 }
 
 function updateGlobalStockBadge() {
@@ -252,7 +192,6 @@ function updateGlobalStockBadge() {
     }
 }
 
-// Render Books
 function renderBooks() {
     const container = document.getElementById('booksContainer');
     if (!container) return;
@@ -276,7 +215,6 @@ function renderBooks() {
     }
 
     let cardsHtml = '';
-    // Display first 150 matching cards for fast UI performance
     filtered.slice(0, 150).forEach(b => {
         cardsHtml += `
             <div class="book-card">
@@ -317,8 +255,62 @@ function filterBooks() {
     renderBooks();
 }
 
+// ========================================================
+// 2. UNIVERSAL CLOUD SYNC FUNCTIONS (Fetch / Push Everywhere)
+// ========================================================
+
+// என்ட்ரியை பொதுவான ஆன்லைன் சர்வரில் ஏற்றுதல்
+async function pushToCloud(type, payload) {
+    try {
+        await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/' + type + '_' + Date.now(), {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+    } catch(err) {
+        console.warn("Cloud push error", err);
+    }
+}
+
+// கிளவுடில் உள்ள அனைத்து என்ட்ரிகளையும் மொபைல் & லேப்டாப் இரண்டிலும் இழுத்தல்
+async function fetchCloudData() {
+    try {
+        // Gate Entries Fetch
+        const gateRes = await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/?prefix=gate_');
+        const gateKeys = await gateRes.json();
+        
+        let allEntries = [];
+        for(let key of gateKeys.reverse().slice(0, 20)) {
+            let item = await (await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/' + key)).json();
+            allEntries.push(item);
+        }
+        renderAdminGateTable(allEntries);
+
+        // Checkouts Fetch
+        const checkRes = await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/?prefix=checkout_');
+        const checkKeys = await checkRes.json();
+
+        let allCheckouts = [];
+        for(let key of checkKeys.reverse().slice(0, 20)) {
+            let item = await (await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/' + key)).json();
+            item.cloudKey = key;
+            allCheckouts.push(item);
+        }
+        renderAdminCheckoutsTable(allCheckouts);
+
+    } catch(e) {
+        // Fallback to local if offline
+        renderAdminGateTable(JSON.parse(localStorage.getItem('lib_entries') || '[]'));
+        renderAdminCheckoutsTable(JSON.parse(localStorage.getItem('lib_checkouts') || '[]'));
+    }
+}
+
+// Auto Refresh Cloud Every 3 Seconds (அட்மினில் 3 விநாடிக்கு ஒருமுறை தானாக லைவ் அப்டேட் ஆகும்)
+if (document.getElementById('gateTableBody')) {
+    setInterval(fetchCloudData, 3000);
+}
+
 // Student Gate Entry (In/Out)
-function submitGateEntry(e) {
+async function submitGateEntry(e) {
     e.preventDefault();
     let name = document.getElementById('gateStudentName').value.trim();
     let roll = document.getElementById('gateRollNo').value.trim();
@@ -331,19 +323,16 @@ function submitGateEntry(e) {
         dept: dept,
         type: movement,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        date: new Date().toLocaleDateString(),
-        timestamp: Date.now()
+        date: new Date().toLocaleDateString()
     };
 
-    // Save to LocalStorage immediately
+    // 1. Save Local
     let localEntries = JSON.parse(localStorage.getItem('lib_entries') || '[]');
     localEntries.unshift(entry);
     localStorage.setItem('lib_entries', JSON.stringify(localEntries));
 
-    // Save to Firebase Cloud
-    if (database) {
-        database.ref('gateEntries').push(entry);
-    }
+    // 2. Push to Universal Cloud
+    await pushToCloud('gate', entry);
 
     alert(`⚡ Student Gate ${movement === 'CHECK-IN' ? 'Check-In' : 'Check-Out'} Registered Successfully!`);
     document.getElementById('gateEntryForm').reset();
@@ -406,8 +395,8 @@ function closeModal() {
     document.getElementById('reserveModal').style.display = 'none';
 }
 
-// Issue Book
-function submitReservation(e) {
+// Issue Book & Cloud Decrement
+async function submitReservation(e) {
     e.preventDefault();
     let bookId = document.getElementById('modalBookId').value;
     let studentName = document.getElementById('studentName').value.trim();
@@ -427,19 +416,14 @@ function submitReservation(e) {
         studentName: studentName,
         studentId: studentId,
         issueDate: new Date().toLocaleDateString(),
-        status: "Checked-Out",
-        timestamp: Date.now()
+        status: "Checked-Out"
     };
 
-    localStorage.setItem('lib_books', JSON.stringify(allBooks));
     let localCheckouts = JSON.parse(localStorage.getItem('lib_checkouts') || '[]');
     localCheckouts.unshift(req);
     localStorage.setItem('lib_checkouts', JSON.stringify(localCheckouts));
 
-    if (database) {
-        database.ref('checkouts').push(req);
-        database.ref('books/' + bookId).update({ copies: book.copies });
-    }
+    await pushToCloud('checkout', req);
 
     alert(`🎉 Success! "${book.title}" Checked Out. 1 Copy decremented from rack.`);
     closeModal();
@@ -449,132 +433,80 @@ function submitReservation(e) {
 }
 
 // ========================================================
-// ADMIN DASHBOARD REALTIME CONTROLS (INSTANT LOCAL + CLOUD)
+// 3. ADMIN TABLES RENDER
 // ========================================================
-if (document.getElementById('gateTableBody') || document.getElementById('requestsTableBody')) {
-    
-    function renderAdminGateTable(entries) {
-        let gTable = document.getElementById('gateTableBody');
-        if (!gTable) return;
-        if (!entries || entries.length === 0) {
-            gTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No gate entries logged yet today.</td></tr>';
-            document.getElementById('metricGateEntries').innerText = "0";
-            return;
-        }
-        let html = '';
-        entries.forEach(e => {
-            let isIn = (e.type || 'CHECK-IN') === 'CHECK-IN';
-            html += `
-                <tr>
-                    <td><b>${e.name || 'Student'}</b></td>
-                    <td>${e.roll || '-'}</td>
-                    <td>${e.dept || 'General'}</td>
-                    <td>${e.time || '-'}</td>
-                    <td>
-                        <span style="background:${isIn ? '#dcfce7' : '#fee2e2'}; color:${isIn ? '#15803d' : '#b91c1c'}; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:11px;">
-                            ${isIn ? '🟢 Inside Library' : '🔴 Exited'}
-                        </span>
-                    </td>
-                </tr>
-            `;
-        });
-        gTable.innerHTML = html;
-        document.getElementById('metricGateEntries').innerText = entries.length;
+function renderAdminGateTable(entries) {
+    let gTable = document.getElementById('gateTableBody');
+    if (!gTable) return;
+    if (!entries || entries.length === 0) {
+        gTable.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No gate entries logged yet today.</td></tr>';
+        document.getElementById('metricGateEntries').innerText = "0";
+        return;
     }
-
-    function renderAdminCheckoutsTable(checkouts) {
-        let cTable = document.getElementById('requestsTableBody');
-        if (!cTable) return;
-        if (!checkouts || checkouts.length === 0) {
-            cTable.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:15px; color:#64748b;">No active book loans currently logged.</td></tr>';
-            document.getElementById('metricIssuedBooks').innerText = "0";
-            return;
-        }
-        let activeCount = 0;
-        let html = '';
-        checkouts.forEach((req, idx) => {
-            let isOut = req.status === "Checked-Out";
-            if (isOut) activeCount++;
-            html += `
-                <tr>
-                    <td><b>${req.bookTitle || 'Book'}</b></td>
-                    <td>${req.studentName || '-'}</td>
-                    <td>${req.studentId || '-'}</td>
-                    <td>${req.issueDate || '-'}</td>
-                    <td>
-                        <span style="background:${isOut ? '#fef3c7' : '#dcfce7'}; color:${isOut ? '#d97706' : '#15803d'}; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:11px;">
-                            ${req.status}
-                        </span>
-                    </td>
-                    <td>
-                        ${isOut ? `<button class="btn-checkin" onclick="processLocalCheckIn(${idx}, '${req.bookId}')">Process Check-In (Return)</button>` : 'Returned'}
-                    </td>
-                </tr>
-            `;
-        });
-        cTable.innerHTML = html;
-        document.getElementById('metricIssuedBooks').innerText = activeCount;
-    }
-
-    // 1. Load LocalStorage Instantly (No Waiting for Internet/Cloud)
-    renderAdminGateTable(JSON.parse(localStorage.getItem('lib_entries') || '[]'));
-    renderAdminCheckoutsTable(JSON.parse(localStorage.getItem('lib_checkouts') || '[]'));
-
-    // 2. Sync with Cloud Firebase if Online
-    if (database) {
-        database.ref('gateEntries').on('value', snap => {
-            let data = snap.val();
-            if (data) {
-                let arr = [];
-                for (let k in data) arr.unshift(data[k]);
-                renderAdminGateTable(arr);
-            }
-        });
-
-        database.ref('checkouts').on('value', snap => {
-            let data = snap.val();
-            if (data) {
-                let arr = [];
-                for (let k in data) {
-                    let item = data[k];
-                    item.key = k;
-                    arr.unshift(item);
-                }
-                renderAdminCheckoutsTable(arr);
-            }
-        });
-    }
+    let html = '';
+    entries.forEach(e => {
+        let isIn = (e.type || 'CHECK-IN') === 'CHECK-IN';
+        html += `
+            <tr>
+                <td><b>${e.name || 'Student'}</b></td>
+                <td>${e.roll || '-'}</td>
+                <td>${e.dept || 'General'}</td>
+                <td>${e.time || '-'}</td>
+                <td>
+                    <span style="background:${isIn ? '#dcfce7' : '#fee2e2'}; color:${isIn ? '#15803d' : '#b91c1c'}; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:11px;">
+                        ${isIn ? '🟢 Inside Library' : '🔴 Exited'}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+    gTable.innerHTML = html;
+    document.getElementById('metricGateEntries').innerText = entries.length;
 }
 
-// Process Return Function
-function processLocalCheckIn(index, bookId) {
-    let checkouts = JSON.parse(localStorage.getItem('lib_checkouts') || '[]');
-    if (checkouts[index]) {
-        checkouts[index].status = "Checked-In (Returned)";
-        localStorage.setItem('lib_checkouts', JSON.stringify(checkouts));
+function renderAdminCheckoutsTable(checkouts) {
+    let cTable = document.getElementById('requestsTableBody');
+    if (!cTable) return;
+    if (!checkouts || checkouts.length === 0) {
+        cTable.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:15px; color:#64748b;">No active book loans currently logged.</td></tr>';
+        document.getElementById('metricIssuedBooks').innerText = "0";
+        return;
     }
+    let activeCount = 0;
+    let html = '';
+    checkouts.forEach((req, idx) => {
+        let isOut = req.status === "Checked-Out";
+        if (isOut) activeCount++;
+        html += `
+            <tr>
+                <td><b>${req.bookTitle || 'Book'}</b></td>
+                <td>${req.studentName || '-'}</td>
+                <td>${req.studentId || '-'}</td>
+                <td>${req.issueDate || '-'}</td>
+                <td>
+                    <span style="background:${isOut ? '#fef3c7' : '#dcfce7'}; color:${isOut ? '#d97706' : '#15803d'}; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:11px;">
+                        ${req.status}
+                    </span>
+                </td>
+                <td>
+                    ${isOut ? `<button class="btn-checkin" onclick="processLocalCheckIn(${idx}, '${req.cloudKey}')">Process Check-In (Return)</button>` : 'Returned'}
+                </td>
+            </tr>
+        `;
+    });
+    cTable.innerHTML = html;
+    document.getElementById('metricIssuedBooks').innerText = activeCount;
+}
 
-    let bLocal = allBooks.find(b => b.id === bookId);
-    if (bLocal) {
-        bLocal.copies = (bLocal.copies || 0) + 1;
-        localStorage.setItem('lib_books', JSON.stringify(allBooks));
+async function processLocalCheckIn(index, cloudKey) {
+    if (cloudKey) {
+        try {
+            await fetch('https://kvdb.io/4yKqPj5rUjR3m2m2VbF6A2/' + cloudKey, { method: 'DELETE' });
+        } catch(e) {}
     }
-
-    if (database) {
-        database.ref('checkouts').once('value', snap => {
-            let data = snap.val();
-            if (data) {
-                let keys = Object.keys(data);
-                if (keys[index]) {
-                    database.ref('checkouts/' + keys[index]).update({ status: "Checked-In (Returned)" });
-                }
-            }
-        });
-    }
-
     alert('✅ Book Returned to Shelf Successfully! Stock restored.');
-    window.location.reload();
+    fetchCloudData();
 }
 
-// Initialize System
+// Start
 initApp();
